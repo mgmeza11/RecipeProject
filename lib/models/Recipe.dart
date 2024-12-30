@@ -17,8 +17,19 @@ class Recipe{
     return {
       'id': id,
       'name': name,
-      'imagePath': imagePath,
-      'categoryCode' : categoryCode
+      'description' : description,
+      'image_path': imagePath,
+      'category_code' : categoryCode
     };
+  }
+
+  static Recipe fromMap(Map<String, dynamic> map){
+    return Recipe(
+        id: map['id'],
+        name: map['name'],
+        description: map['description'],
+        imagePath: map['image_path'],
+        categoryCode: map['category_code']
+    );
   }
 }

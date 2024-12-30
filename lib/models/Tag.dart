@@ -10,4 +10,11 @@ class Tag {
       'description': description,
     };
   }
+
+  static Tag fromMap(Map<String, dynamic> map){
+    return Tag(
+        id: map['id'],
+        description: map['description']
+    );
+  }
 }

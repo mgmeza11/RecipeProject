@@ -14,9 +14,18 @@ class Step{
   Map<String, dynamic> toMap(){
     return {
       'id': id,
-      'idRecipe': idRecipe,
+      'id_recipe': idRecipe,
       'description': description,
       'order' : order
     };
+  }
+
+  static Step fromMap(Map<String, dynamic> map){
+    return Step(
+        id: map['id'],
+        description: map['description'],
+        order: map['order'],
+        idRecipe: map['id_recipe']
+    );
   }
 }

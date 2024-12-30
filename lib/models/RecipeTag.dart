@@ -12,8 +12,16 @@ class RecipeTag{
   Map<String, dynamic> toMap(){
     return {
       'id': id,
-      'idRecipe': idRecipe,
-      'idTag': idTag
+      'id_recipe': idRecipe,
+      'id_tag': idTag
     };
+  }
+
+  static RecipeTag fromMap(Map<String, dynamic> map){
+    return RecipeTag(
+        id: map['id'],
+        idRecipe: map['id_recipe'],
+        idTag: map['id_tag']
+    );
   }
 }
