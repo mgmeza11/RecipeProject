@@ -5,7 +5,7 @@ import 'package:recipes_project/utils/Categories.dart';
 class MainIconWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    var categoriesList = Category.values;
+    var categoriesList = CategoryType.values;
     return GridView.count(
       crossAxisCount: 2,
       crossAxisSpacing: 10,
@@ -21,7 +21,7 @@ class MainIconWidget extends StatelessWidget{
 }
 
 class MainIconItemWidget extends StatelessWidget {
-  final Category category;
+  final CategoryType category;
   const MainIconItemWidget({super.key, required this.category});
   @override
   Widget build(BuildContext context) {

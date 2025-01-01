@@ -1,10 +1,10 @@
-class Step{
+class RecipeStep{
   int? id;
   int idRecipe;
   String description;
   int order;
 
-  Step({
+  RecipeStep({
     this.id,
     required this.idRecipe,
     required this.description,
@@ -20,8 +20,8 @@ class Step{
     };
   }
 
-  static Step fromMap(Map<String, dynamic> map){
-    return Step(
+  static RecipeStep fromMap(Map<String, dynamic> map){
+    return RecipeStep(
         id: map['id'],
         description: map['description'],
         order: map['order'],
