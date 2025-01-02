@@ -6,12 +6,13 @@ import 'CategoryNameWidget.dart';
 
 class HeaderRecipeWidget extends StatelessWidget{
   final String? imagePath;
-  final CategoryType categoryType;
+  final String categoryCode;
   bool showOptions = false;
 
-  HeaderRecipeWidget({super.key, this.imagePath, required this.categoryType, this.showOptions = false});
+  HeaderRecipeWidget({super.key, this.imagePath, required this.categoryCode, this.showOptions = false});
   @override
   Widget build(BuildContext context) {
+    var categoryType = getCategoryType(categoryCode);
     return Stack(
       children: [
         Image.asset("assets/imagen_pasta.jpeg"),

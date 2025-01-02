@@ -1,7 +1,9 @@
+import 'dart:ffi';
+
 class Ingredients{
   int? id;
   String name;
-  int count;
+  String count;
   int idRecipe;
   String unit;
 
@@ -31,5 +33,9 @@ class Ingredients{
         idRecipe: map['id_recipe'],
         unit: map['unit']
     );
+  }
+
+  Ingredients copyWith({int? id, String? name, String? count, int? idRecipe, String? unit}){
+    return Ingredients(id: id?? this.id, name: name?? this.name, count: count?? this.count, idRecipe: idRecipe?? this.idRecipe, unit: unit?? this.unit);
   }
 }

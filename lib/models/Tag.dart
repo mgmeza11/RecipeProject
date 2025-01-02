@@ -17,4 +17,5 @@ class Tag {
         description: map['description']
     );
   }
+
 }

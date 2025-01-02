@@ -1,31 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:recipes_project/screens/RecipeDetailScreen.dart';
+import 'package:recipes_project/widgets/ErrorWidget.dart';
+import 'package:recipes_project/widgets/LoadingWidget.dart';
 import 'package:recipes_project/widgets/RecipeCardWidget.dart';
 
 import '../models/Recipe.dart';
+import '../providers/RecipeListProvider.dart';
+import 'RecipeFormScreen.dart';
 
-class RecipeListScreen extends ConsumerWidget {
-  var itemList = [
-    Recipe(name: 'Pasta Bolognesa', categoryCode: 'DINNER', description: 'Pasta con carne molida', imagePath: "assets/imagen_pasta.jpeg" ),
-    Recipe(name: 'Sandwich de atún', categoryCode: 'SNACK', description: 'Sandwich alto en proteina', imagePath: "assets/imagen_pasta.jpeg"),
-    Recipe(name: 'Ensalada César', categoryCode: 'DINNER', description: 'Ensalada con pollo', imagePath: "assets/imagen_pasta.jpeg"),
-    Recipe(name: 'Pancakes de avena', categoryCode: 'BREAKFAST', description: 'Pancakes alto en fibra', imagePath: "assets/imagen_pasta.jpeg")
-  ];
+
+class RecipeListScreen extends ConsumerStatefulWidget {
+  const RecipeListScreen({super.key});
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RecipeListScreen> createState() => RecipeListScreenState();
+}
+
+class RecipeListScreenState extends ConsumerState<RecipeListScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(recipeListProvider.notifier).getAll();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final itemListState = ref.watch(recipeListProvider);
     return Scaffold(
-      body: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 3.0,
-            mainAxisSpacing: 3.0,
-          ),
-          itemCount: itemList.length,
-          itemBuilder: (context, index){
-            return RecipeCardWidget(recipe : itemList[index]);
-          }),
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => RecipeFormScreen()));
+      },
+        child: const Icon(Icons.add),
+      ),
+      body: itemListState.when(
+          data: (itemList){
+            return BodyRecipeList(itemList, (idRecipe){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => RecipeDetailScreen(idRecipe: idRecipe,)));
+            });
+          },
+          error: (e, s){return CustomErrorWidget(message: e.toString());},
+          loading: (){return LoadingWidget();})
     );
+  }
+
+  Widget BodyRecipeList (List<Recipe> recipeList, Function(int) onClick){
+    return GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 3.0,
+          mainAxisSpacing: 3.0,
+        ),
+        itemCount: recipeList?.length,
+        itemBuilder: (context, index){
+          Recipe recipe = recipeList[index];
+          return GestureDetector(
+            child: RecipeCardWidget(recipe : recipe),
+            onTap: (){onClick(recipe.id!);},
+          );
+        });
   }
   
 }

@@ -1,43 +1,76 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipes_project/models/Ingredients.dart';
 import 'package:recipes_project/models/RecipeStep.dart';
-import 'package:recipes_project/widgets/BodyRecipeDetailsWidget.dart';
-import 'package:recipes_project/widgets/IngredientsWidget.dart';
-import 'package:recipes_project/widgets/StepWidget.dart';
-import 'package:recipes_project/widgets/TextWidgets.dart';
+import 'package:recipes_project/providers/RecipeDetailProvider.dart';
 
 import '../models/Recipe.dart';
 import '../utils/Categories.dart';
+import '../widgets/ErrorWidget.dart';
 import '../widgets/HeaderRecipeWidget.dart';
+import '../widgets/IngredientsWidget.dart';
+import '../widgets/LoadingWidget.dart';
+import '../widgets/StepWidget.dart';
+import '../widgets/TextWidgets.dart';
 
-class RecipeDetailScreen extends StatelessWidget{
-  final Recipe recipe;
 
-  RecipeDetailScreen({super.key, required this.recipe});
+class RecipeDetailScreen extends ConsumerStatefulWidget {
+  int idRecipe;
+
+  RecipeDetailScreen({super.key, required this.idRecipe});
 
   @override
-  Widget build(BuildContext context) {
-    var category = getCategoryType(recipe.categoryCode);
-    var ingredients = [
-      Ingredients(name: "Cebolla", count: 1, idRecipe: 1, unit: "Und"),
-      Ingredients(name: "Tomate", count: 1, idRecipe: 1, unit: "Und"),
-      Ingredients(name: "Ajo", count: 1, idRecipe: 1, unit: "Und"),
-      Ingredients(name: "Pasta de su preferencia", count: 500, idRecipe: 1, unit: "g"),
-    ];
+  ConsumerState<RecipeDetailScreen> createState() => RecipeDetailScreenState();
+}
 
-    var steps = [
-      RecipeStep(idRecipe: 1, description: 'Hervir agua en una olla y agregar la pasta y sal ', order: 1),
-      RecipeStep(idRecipe: 1, description: 'Picar finamente la cebolla, tomate, ajo y sofreir en un sartén con un chorro de aceite', order: 1),
-    ];
+class RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen>{
+  @override
+  void initState() {
+    super.initState();
+    ref.read(recipeDetailProvider.notifier).init(widget.idRecipe);
+  }
+  @override
+  Widget build(BuildContext context) {
+    var recipeStateProvider = ref.watch(recipeDetailProvider);
    return Scaffold(
+     appBar: AppBar(),
      body: SafeArea(
-       child: Column(
-         children: [
-           HeaderRecipeWidget(categoryType: category,showOptions: true, imagePath: recipe.imagePath,),
-           BodyRecipeDetailsWidget(recipe: recipe, ingredients: ingredients, steps: steps)],
-       )
+       child: recipeStateProvider.when(
+           data: (recipe){
+             return Column(
+               children: [
+                 HeaderRecipeWidget(categoryCode: recipe.categoryCode,showOptions: true, imagePath: recipe.imagePath,),
+                 BodyRecipeDetailsWidget(recipe: recipe, ingredients: recipe.ingredients, steps: recipe.steps)],
+             );
+           }, error: (e, s) {
+         return CustomErrorWidget(message: e.toString());
+       }, loading: () {
+         return LoadingWidget();
+       })
+
      )
    );
+  }
+
+  Widget BodyRecipeDetailsWidget({required Recipe recipe, required List<Ingredients> ingredients, required List<RecipeStep> steps}) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            LargeTitle(text: recipe.name),
+            const SizedBox(height: 5,),
+            if(recipe.description != null ) DetailText(text: recipe.description!,),
+            const SizedBox(height: 10,),
+            const MediumTitle(text: "Ingredientes"),
+            if( ingredients.isNotEmpty) IngredientTitle(),
+            for(var ingredient in ingredients) IngredientWidget(ingredient),
+            const SizedBox(height: 10,),
+            const MediumTitle(text: "Pasos"),
+            for(var step in steps) StepWidget(step: step),
+          ]
+      ),);
   }
 }

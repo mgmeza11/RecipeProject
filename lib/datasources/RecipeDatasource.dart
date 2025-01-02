@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipes_project/models/Recipe.dart';
 import 'package:recipes_project/utils/DatabaseUtils.dart';
 
@@ -9,8 +10,8 @@ class RecipeDatasource{
 
   RecipeDatasource(this.databaseHelper);
 
-  Future<void> insert(Recipe recipe) async {
-    await databaseHelper.add(RECIPES_TABLENAME, recipe.toMap());
+  Future<int> insert(Recipe recipe) async {
+    return await databaseHelper.add(RECIPES_TABLENAME, recipe.toMap());
   }
 
   Future<void> update (Recipe recipe) async {
@@ -31,4 +32,13 @@ class RecipeDatasource{
     return data.map((item) => Recipe.fromMap(item)).toList();
   }
 
+  Future<Recipe?> findById(int idRecipe) async {
+    final data = await databaseHelper.findById(RECIPES_TABLENAME, idRecipe);
+    return (data != null)? Recipe.fromMap(data) : null;
+  }
+
 }
+final recipeDatasourceProvider = Provider<RecipeDatasource>((ref) {
+  final databaseHelper = ref.read(databaseHelperProvider);
+  return RecipeDatasource(databaseHelper);
+});

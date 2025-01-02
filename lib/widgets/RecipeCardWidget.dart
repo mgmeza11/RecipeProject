@@ -13,12 +13,11 @@ class RecipeCardWidget extends StatelessWidget{
   RecipeCardWidget({super.key, required this.recipe});
   @override
   Widget build(BuildContext context) {
-    var category = getCategoryType(recipe.categoryCode);
     return Card(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          HeaderRecipeWidget(categoryType: category, imagePath: recipe.imagePath,),
+          HeaderRecipeWidget(categoryCode: recipe.categoryCode, imagePath: recipe.imagePath,),
           Text(recipe.name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),textAlign: TextAlign.start,),
           Text(recipe.description!!, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal),),
         ],

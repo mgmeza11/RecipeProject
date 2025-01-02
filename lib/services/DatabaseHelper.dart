@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipes_project/utils/DatabaseUtils.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -17,16 +18,16 @@ class DatabaseHelper {
   }
 
   Future _onCreate(Database db, int version) async {
-    await db.execute('CREATE TABLE $RECIPES_TABLENAME (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, image_path TEXT, category_code TEXT)');
-    await db.execute('CREATE TABLE $STEPS_TABLENAME (id INTEGER PRIMARY KEY AUTOINCREMENT, id_recipe INTEGER, description TEXT, order INTEGER)');
-    await db.execute('CREATE TABLE $TAGS_TABLENAME (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT)');
-    await db.execute('CREATE TABLE $TAG_RECIPE_TABLENAME (id INTEGER PRIMARY KEY AUTOINCREMENT, id_recipe INTEGER, id_tag INTEGER)');
-    await db.execute('CREATE TABLE $INGREDIENTS_TABLENAME (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, id_recipe INTEGER, count INTEGER, unit TEXT)');
+    await db.execute('CREATE TABLE $RECIPES_TABLENAME (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT, image_path TEXT, category_code TEXT);');
+    await db.execute('CREATE TABLE $STEPS_TABLENAME (id INTEGER PRIMARY KEY AUTOINCREMENT, id_recipe INTEGER, description TEXT, order_step INTEGER);');
+    await db.execute('CREATE TABLE $TAGS_TABLENAME (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT);');
+    await db.execute('CREATE TABLE $TAG_RECIPE_TABLENAME (id INTEGER PRIMARY KEY AUTOINCREMENT, id_recipe INTEGER, id_tag INTEGER);');
+    await db.execute('CREATE TABLE $INGREDIENTS_TABLENAME (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, id_recipe INTEGER, count TEXT, unit TEXT);');
   }
 
-  Future<void> add(String tableName, Map<String, dynamic> data) async {
+  Future<int> add(String tableName, Map<String, dynamic> data) async {
     final db = await database;
-    await db.insert(
+    return await db.insert(
       tableName,
       data,
       conflictAlgorithm: ConflictAlgorithm.replace,
@@ -80,4 +81,13 @@ class DatabaseHelper {
     return await db.query(tableName, where: where, whereArgs: whereArgs);
   }
 
+  Future<Map<String, dynamic>?> findById(String tableName, int id) async {
+    List<Map<String, dynamic>> results = await getWhere(tableName, 'id = ? ', [id]);
+    return results.first;
+  }
+
 }
+
+final databaseHelperProvider = Provider<DatabaseHelper>((ref) {
+  return DatabaseHelper();
+});
