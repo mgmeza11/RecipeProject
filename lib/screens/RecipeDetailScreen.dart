@@ -4,9 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipes_project/models/Ingredients.dart';
 import 'package:recipes_project/models/RecipeStep.dart';
 import 'package:recipes_project/providers/RecipeDetailProvider.dart';
+import 'package:recipes_project/widgets/TagWidget.dart';
 
 import '../models/Recipe.dart';
-import '../utils/Categories.dart';
+import '../models/Tag.dart';
 import '../widgets/ErrorWidget.dart';
 import '../widgets/HeaderRecipeWidget.dart';
 import '../widgets/IngredientsWidget.dart';
@@ -41,7 +42,7 @@ class RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen>{
              return Column(
                children: [
                  HeaderRecipeWidget(categoryCode: recipe.categoryCode,showOptions: true, imagePath: recipe.imagePath,),
-                 BodyRecipeDetailsWidget(recipe: recipe, ingredients: recipe.ingredients, steps: recipe.steps)],
+                 BodyRecipeDetailsWidget(recipe: recipe, ingredients: recipe.ingredients, steps: recipe.steps, tags: recipe.tags)],
              );
            }, error: (e, s) {
          return CustomErrorWidget(message: e.toString());
@@ -53,7 +54,7 @@ class RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen>{
    );
   }
 
-  Widget BodyRecipeDetailsWidget({required Recipe recipe, required List<Ingredients> ingredients, required List<RecipeStep> steps}) {
+  Widget BodyRecipeDetailsWidget({required Recipe recipe, required List<Ingredients> ingredients, required List<RecipeStep> steps, required List<Tag> tags}) {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -61,6 +62,8 @@ class RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen>{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             LargeTitle(text: recipe.name),
+            const SizedBox(height: 5,),
+            ContainerTags(tags),
             const SizedBox(height: 5,),
             if(recipe.description != null ) DetailText(text: recipe.description!,),
             const SizedBox(height: 10,),
@@ -72,5 +75,13 @@ class RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen>{
             for(var step in steps) StepWidget(step: step),
           ]
       ),);
+  }
+
+  Widget ContainerTags(List<Tag> tagList){
+    return Wrap(
+      spacing: 5,
+      children: tagList.map((e) => TagLabelWidget(tag: e)
+      ).toList(),
+    );
   }
 }

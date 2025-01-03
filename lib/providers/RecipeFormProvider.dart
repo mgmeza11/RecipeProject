@@ -1,8 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipes_project/models/Ingredients.dart';
 import 'package:recipes_project/models/RecipeStep.dart';
+import 'package:recipes_project/models/RecipeTag.dart';
+import 'package:recipes_project/models/Tag.dart';
 import 'package:recipes_project/repository/IngredientsRepository.dart';
 import 'package:recipes_project/repository/RecipeStepRepository.dart';
+import 'package:recipes_project/repository/TagRepository.dart';
 import 'package:recipes_project/utils/Categories.dart';
 import 'package:recipes_project/utils/CustomException.dart';
 
@@ -13,12 +16,13 @@ class RecipeFormNotifier extends StateNotifier<AsyncValue<Recipe>>{
   RecipeRepository recipeRepository;
   RecipeStepRepository stepRepository;
   IngredientsRepository ingredientsRepository;
+  TagRepository tagRepository;
 
-  RecipeFormNotifier({required this.recipeRepository, required this.stepRepository, required this.ingredientsRepository }): super(const AsyncValue.loading());
+  RecipeFormNotifier({required this.recipeRepository, required this.stepRepository, required this.ingredientsRepository, required this.tagRepository }): super(const AsyncValue.loading());
 
   void init(int? idRecipe) async {
     if(idRecipe == null){
-      state = AsyncValue.data(Recipe(name: '', categoryCode: CategoryType.breakfast.code, ingredients: [], steps: []));
+      state = AsyncValue.data(Recipe(name: '', categoryCode: CategoryType.breakfast.code, ingredients: [], steps: [], tags: []));
     } else {
       Recipe? recipe = await recipeRepository.findById(idRecipe);
       if(recipe != null){
@@ -34,7 +38,8 @@ class RecipeFormNotifier extends StateNotifier<AsyncValue<Recipe>>{
     try{
       List<RecipeStep> stepList = await stepRepository.getByRecipe(idRecipe);
       List<Ingredients> ingredientList = await ingredientsRepository.getByRecipe(idRecipe);
-      state = AsyncValue.data(recipe.copyWith(ingredients: ingredientList, steps: stepList));
+      List<Tag> tagList = await tagRepository.getByRecipe(idRecipe);
+      state = AsyncValue.data(recipe.copyWith(ingredients: ingredientList, steps: stepList, tags: tagList));
     } catch (e) {
       state = AsyncValue.error(CustomException(CustomExceptionTypes.technicalError.message), StackTrace.empty);
     }
@@ -47,6 +52,7 @@ class RecipeFormNotifier extends StateNotifier<AsyncValue<Recipe>>{
       int idRecipe = await recipeRepository.insert(recipe);
       saveSteps(recipe, idRecipe);
       saveIngredients(recipe, idRecipe);
+      saveTags(recipe, idRecipe);
     }catch(e){
       state = AsyncValue.error(CustomException(CustomExceptionTypes.technicalError.message), StackTrace.empty);
     }
@@ -67,9 +73,17 @@ class RecipeFormNotifier extends StateNotifier<AsyncValue<Recipe>>{
 
   void saveIngredients(Recipe recipe, int idRecipe) async {
     List<Ingredients> currentingredients = recipe.ingredients;
-    if (recipe.ingredients.isNotEmpty) {
+    if (currentingredients.isNotEmpty) {
       List<Ingredients> newIngredients = currentingredients.map((e) => e.copyWith(idRecipe: idRecipe)).toList();
       await ingredientsRepository.addList(newIngredients);
+    }
+  }
+
+  void saveTags(Recipe recipe, int idRecipe) async {
+    List<Tag> currentTags = recipe.tags;
+    if (currentTags.isNotEmpty) {
+      List<RecipeTag> recipeTags = currentTags.map((e) => RecipeTag(idRecipe: idRecipe, idTag: e.id!)).toList();
+      await tagRepository.addRecipeTagList(recipeTags);
     }
   }
 
@@ -136,11 +150,24 @@ class RecipeFormNotifier extends StateNotifier<AsyncValue<Recipe>>{
     state = AsyncData(state.value!.copyWith(steps:newSteps));
   }
 
+  //Tags
+  void addTagItem(Tag tag) async {
+    var currentTags = state.value!.tags;
+    state = AsyncData(state.value!.copyWith(tags: [...?currentTags, tag]));
+  }
+
+  void deleteTagItem(int index){
+    List<Tag> newTags = state.value!.tags!;
+    newTags.removeAt(index);
+    state = AsyncData(state.value!.copyWith(tags: newTags));
+  }
+
 }
 
 final recipeFormProvider = StateNotifierProvider<RecipeFormNotifier, AsyncValue<Recipe>>((ref) {
   final recipeRpository = ref.read(recipeRepositoryProvider);
   final stepRepository = ref.read(recipeStepRepositoryProvider);
   final ingredientsRepository = ref.read(ingredientsRepositoryProvider);
-  return RecipeFormNotifier(recipeRepository: recipeRpository, stepRepository: stepRepository, ingredientsRepository: ingredientsRepository);
+  final tagRepository = ref.read(tagRepositoryProvider);
+  return RecipeFormNotifier(recipeRepository: recipeRpository, stepRepository: stepRepository, ingredientsRepository: ingredientsRepository, tagRepository: tagRepository);
 });

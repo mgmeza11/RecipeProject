@@ -86,6 +86,11 @@ class DatabaseHelper {
     return results.first;
   }
 
+  Future<List<Map<String, Object?>>> query(String query, int arguments) async {
+    final db = await database;
+    return await db.rawQuery(query, [arguments]);
+  }
+
 }
 
 final databaseHelperProvider = Provider<DatabaseHelper>((ref) {

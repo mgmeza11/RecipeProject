@@ -19,22 +19,22 @@ Widget IngredientRow(
     required Function(Ingredients) onChangedCount,
     required Function(Ingredients) onChangedUnit,
     required Function(Ingredients) onChangedName,
-    required VoidCallback onDelete}){
+    required VoidCallback onDelete,
+      required List<TextEditingController> textEditingControllerList}){
   return Row(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(width: 50, child: TextFormField(
-          controller: TextEditingController(text: ingredient.count.toString()),
           onChanged: (newCount){
             Ingredients newIngredient = ingredient.copyWith(count: newCount);
             onChangedUnit(newIngredient);
           },
+          controller: textEditingControllerList[0],
         ),),
         const SizedBox(width: 10,),
         SizedBox(width: 50, child: TextFormField(
-          //initialValue: ingredient.unit ?? '',
-          controller: TextEditingController(text: ingredient.unit),
+          controller: textEditingControllerList[1],
           onChanged: (newUnit){
             Ingredients newIngredient = ingredient.copyWith(unit: newUnit);
             onChangedUnit(newIngredient);
@@ -42,9 +42,8 @@ Widget IngredientRow(
         ),
         ),
         const SizedBox(width: 10,),
-        Expanded(child: TextFormField(
-          //initialValue: ingredient.name ?? '',
-          controller: TextEditingController(text: ingredient.name),
+        Expanded(child: TextField(
+          controller: textEditingControllerList[2],
           onChanged: (newName){
             Ingredients newIngredient = ingredient.copyWith(name: newName);
             onChangedName(newIngredient);

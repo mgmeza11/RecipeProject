@@ -14,6 +14,10 @@ class IngredientsRepository{
   Future<void> addList(List<Ingredients> ingredientsList) async {
     ingredientsDatasource.addList(ingredientsList);
   }
+
+  Future<void> deleteByRecipe(int idRecipe) async {
+    ingredientsDatasource.deleteByRecipe(idRecipe);
+  }
 }
 
 final ingredientsRepositoryProvider = Provider<IngredientsRepository>((ref) {

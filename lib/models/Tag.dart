@@ -18,4 +18,8 @@ class Tag {
     );
   }
 
+  Tag copyWith({int? id, String? description}){
+    return Tag(description: description?? this.description, id: id ?? this.id);
+  }
+
 }

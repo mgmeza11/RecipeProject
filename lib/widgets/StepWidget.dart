@@ -10,7 +10,7 @@ class StepWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Padding(padding: const EdgeInsets.only(top: 5), child: Row(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -18,7 +18,7 @@ class StepWidget extends StatelessWidget {
         Expanded(child: DetailText(text: step.description))
 
       ],
-    );
+    ));
   }
 
 }
