@@ -69,6 +69,7 @@ class RecipeFormScreenState extends ConsumerState<RecipeFormScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           ref.read(recipeFormProvider.notifier).saveData();
+          Navigator.pop(context, true);
         },
         child: const Icon(Icons.save_outlined),
       ),

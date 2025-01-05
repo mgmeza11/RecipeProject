@@ -4,7 +4,6 @@ import 'package:recipes_project/usecases/GetTagsUseCase.dart';
 import 'package:recipes_project/usecases/SaveTagUsecase.dart';
 
 import '../models/Tag.dart';
-import '../repository/TagRepository.dart';
 
 class TagListNotifier extends StateNotifier<TagListState>{
   GetTagsUsecase getTagsUsecase;

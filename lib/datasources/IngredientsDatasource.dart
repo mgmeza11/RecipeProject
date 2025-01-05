@@ -19,7 +19,7 @@ class IngredientsDatasource {
   }
 
   Future<List<Ingredients>> getByRecipe(int recipeId) async {
-    final data = await databaseHelper.getWhere(INGREDIENTS_TABLENAME, 'id_recipe = ? ', [recipeId]);
+    final data = await databaseHelper.getWhere(INGREDIENTS_TABLENAME, 'id_recipe = ? ', [recipeId], null);
     return data.map((item) => Ingredients.fromMap(item)).toList();
   }
 

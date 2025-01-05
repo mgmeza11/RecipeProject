@@ -19,7 +19,7 @@ class StepDatasource {
   }
 
   Future<List<RecipeStep>> getByRecipe(int recipeId) async {
-    final data = await databaseHelper.getWhere(STEPS_TABLENAME, 'id_recipe = ? ', [recipeId]);
+    final data = await databaseHelper.getWhere(STEPS_TABLENAME, 'id_recipe = ? ', [recipeId], ' order_step ASC ');
     return data.map((item) => RecipeStep.fromMap(item)).toList();
   }
 

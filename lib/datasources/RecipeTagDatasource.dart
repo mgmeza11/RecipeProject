@@ -13,7 +13,7 @@ class RecipeTagDatasource {
   }
 
   Future<List<RecipeTag>> getByRecipe(int recipeId) async {
-    final data = await databaseHelper.getWhere(TAG_RECIPE_TABLENAME, 'id_recipe = ? ', [recipeId]);
+    final data = await databaseHelper.getWhere(TAG_RECIPE_TABLENAME, 'id_recipe = ? ', [recipeId], null);
     return data.map((item) => RecipeTag.fromMap(item)).toList();
   }
 

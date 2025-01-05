@@ -15,6 +15,7 @@ import '../widgets/IngredientsWidget.dart';
 import '../widgets/LoadingWidget.dart';
 import '../widgets/StepWidget.dart';
 import '../widgets/TextWidgets.dart';
+import 'RecipeFormScreen.dart';
 
 class RecipeDetailScreen extends ConsumerStatefulWidget {
   int idRecipe;
@@ -51,7 +52,11 @@ class RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                   notifier.deleteRecipe(widget.idRecipe);
                   Navigator.pop(context, true);
                 },
-                onEdit: (){},
+                onEdit: () async {
+                  bool requireUpdate = await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => RecipeFormScreen(idRecipe: widget.idRecipe,)));
+                  if (requireUpdate) notifier.init(widget.idRecipe);
+                },
               ),
               BodyRecipeDetailsWidget(
                   recipe: recipe,

@@ -76,13 +76,13 @@ class DatabaseHelper {
     return await db.query(tableName);
   }
 
-  Future<List<Map<String, dynamic>>> getWhere(String tableName, String where, List<dynamic> whereArgs ) async {
+  Future<List<Map<String, dynamic>>> getWhere(String tableName, String where, List<dynamic> whereArgs, String? orderBy) async {
     final db = await database;
-    return await db.query(tableName, where: where, whereArgs: whereArgs);
+    return await db.query(tableName, where: where, whereArgs: whereArgs, orderBy: orderBy);
   }
 
   Future<Map<String, dynamic>?> findById(String tableName, int id) async {
-    List<Map<String, dynamic>> results = await getWhere(tableName, 'id = ? ', [id]);
+    List<Map<String, dynamic>> results = await getWhere(tableName, 'id = ? ', [id], null);
     return results.first;
   }
 
