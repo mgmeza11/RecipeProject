@@ -18,7 +18,7 @@ class RecipeTagDatasource {
   }
 
   Future<void> delete (RecipeTag recipeTag) async {
-    await databaseHelper.delete(TAG_RECIPE_TABLENAME, recipeTag.id!!);
+    await databaseHelper.delete(TAG_RECIPE_TABLENAME, recipeTag.id!);
   }
 
   Future<void> deleteByRecipe(int recipeId) async {

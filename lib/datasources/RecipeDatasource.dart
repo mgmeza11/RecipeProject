@@ -18,8 +18,8 @@ class RecipeDatasource{
     await databaseHelper.update(RECIPES_TABLENAME, recipe.toMap());
   }
 
-  Future<void> delete (Recipe recipe) async {
-    await databaseHelper.delete(RECIPES_TABLENAME, recipe.id!!);
+  Future<void> delete (int idRecipe) async {
+    await databaseHelper.delete(RECIPES_TABLENAME, idRecipe);
   }
 
   Future<List<Recipe>> getAll() async {

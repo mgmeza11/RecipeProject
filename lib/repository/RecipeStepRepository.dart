@@ -17,6 +17,10 @@ class RecipeStepRepository{
     await stepDatasource.addList(recipeStepList);
   }
 
+  Future<void> deleteByRecipe ( int idRecipe) async {
+    await stepDatasource.deleteByRecipe(idRecipe);
+  }
+
 }
 
 final recipeStepRepositoryProvider = Provider<RecipeStepRepository>((ref) {

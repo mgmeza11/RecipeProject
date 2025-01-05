@@ -21,11 +21,15 @@ class TagRepository {
   }
 
   Future<void> addRecipeTag(RecipeTag recipeTag) async {
-    tagDatasource.addRecipeTag(recipeTag);
+    await tagDatasource.addRecipeTag(recipeTag);
   }
 
   Future<void> addRecipeTagList(List<RecipeTag> recipeTag) async {
-    tagDatasource.addRecipeTagList(recipeTag);
+    await tagDatasource.addRecipeTagList(recipeTag);
+  }
+
+  Future<void> deleteByRecipe (int idRecipe) async {
+    await tagDatasource.deleteByRecipe(idRecipe);
   }
 
 }

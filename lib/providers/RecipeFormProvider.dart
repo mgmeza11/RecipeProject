@@ -107,18 +107,18 @@ class RecipeFormNotifier extends StateNotifier<AsyncValue<Recipe>>{
   void addIngredientItem(){
     Ingredients ingredients = Ingredients(name: '', count: '', unit: '', idRecipe: 0);
     var currentIngredients = state.value!.ingredients;
-    state = AsyncData(state.value!.copyWith(ingredients: [...?currentIngredients, ingredients]));
+    state = AsyncData(state.value!.copyWith(ingredients: [...currentIngredients, ingredients]));
   }
 
   void deleteIngredientItem(int index){
-    List<Ingredients> newIngredients = state.value!.ingredients!;
+    List<Ingredients> newIngredients = state.value!.ingredients;
     newIngredients.removeAt(index);
     state = AsyncData(state.value!.copyWith(ingredients:newIngredients));
   }
 
   void updateIngredientItem(int index,
       Ingredients updatedIngredient){
-    List<Ingredients> newIngredients = state.value!.ingredients!;
+    List<Ingredients> newIngredients = state.value!.ingredients;
     newIngredients[index] = updatedIngredient;
     state = AsyncData(state.value!.copyWith(ingredients:newIngredients));
   }

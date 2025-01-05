@@ -23,6 +23,10 @@ class RecipeRepository {
     return recipeDatasource.getFilteredList(where, whereArgs);
   }
 
+  Future<void> deleteRecipe(int idRecipe) async{
+    await recipeDatasource.delete(idRecipe);
+  }
+
 }
 
 final recipeRepositoryProvider = Provider<RecipeRepository>((ref) {

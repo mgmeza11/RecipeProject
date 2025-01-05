@@ -1,5 +1,3 @@
-import 'package:recipes_project/models/Recipe.dart';
-
 class RecipeStep{
   int? id;
   int idRecipe;

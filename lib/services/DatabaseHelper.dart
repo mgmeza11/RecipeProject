@@ -63,7 +63,7 @@ class DatabaseHelper {
   }
   
   Future<void> delete(String tableName, int id) async{
-    await deleteWhere(tableName, 'id', [id]);
+    await deleteWhere(tableName, 'id = ? ', [id]);
   }
 
   Future<void> deleteWhere(String tableName, String where, List<Object> whereArgs ) async{

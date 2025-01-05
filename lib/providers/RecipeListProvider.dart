@@ -4,7 +4,6 @@ import 'package:recipes_project/models/RecipeListState.dart';
 import 'package:recipes_project/usecases/FilterRecipeListUsecase.dart';
 import 'package:recipes_project/usecases/GetRecipeListUsecase.dart';
 import 'package:recipes_project/utils/CustomException.dart';
-import '../repository/RecipeRepository.dart';
 
 class RecipeListNotifier extends StateNotifier<AsyncValue<RecipeListState>>{
   final FilterRecipeListUsecase filterRecipeListUsecase;
@@ -25,8 +24,13 @@ class RecipeListNotifier extends StateNotifier<AsyncValue<RecipeListState>>{
   }
 
   Future<void> reloadResults() async {
-    List<Recipe> recipeFilter = await filter(state.value?.currentFilters ?? [], state.value?.keyword ?? "");
-    state = AsyncValue.data(state.value!.copyWith(listRecipe: recipeFilter));
+    if(state.value!.currentFilters.isNotEmpty || state.value!.keyword.isNotEmpty){
+      List<Recipe> recipeFilter = await filter(state.value?.currentFilters ?? [], state.value?.keyword ?? "");
+      state = AsyncValue.data(state.value!.copyWith(listRecipe: recipeFilter));
+    }else{
+      getAll();
+    }
+
   }
 
   Future<List<Recipe>> filter(List<dynamic> filterList, String keyword) async {

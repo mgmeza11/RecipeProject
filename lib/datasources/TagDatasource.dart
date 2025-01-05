@@ -22,7 +22,7 @@ class TagDatasource {
   }
 
   Future<void> deleteByRecipe(int recipeId) async {
-    await databaseHelper.deleteWhere(TAGS_TABLENAME, 'id_recipe = ? ', [recipeId]);
+    await databaseHelper.deleteWhere(TAG_RECIPE_TABLENAME, 'id_recipe = ? ', [recipeId]);
   }
 
   Future<int> addTag(Tag tag) async {

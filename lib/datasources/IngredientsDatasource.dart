@@ -24,7 +24,7 @@ class IngredientsDatasource {
   }
 
   Future<void> delete (Ingredients ingredients) async {
-    await databaseHelper.delete(INGREDIENTS_TABLENAME, ingredients.id!!);
+    await databaseHelper.delete(INGREDIENTS_TABLENAME, ingredients.id!);
   }
 
   Future<void> deleteByRecipe(int idRecipe) async {

@@ -24,7 +24,7 @@ class RecipeFilterItem{
 
   RecipeFilterItem({required this.data, required this.selected});
 
-  RecipeFilterItem copyWith({dynamic? data, bool? selected}){
+  RecipeFilterItem copyWith({dynamic data, bool? selected}){
     return RecipeFilterItem(data: data?? this.data, selected: selected?? this.selected);
   }
 }

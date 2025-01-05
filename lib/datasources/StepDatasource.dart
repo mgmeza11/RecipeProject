@@ -23,8 +23,8 @@ class StepDatasource {
     return data.map((item) => RecipeStep.fromMap(item)).toList();
   }
 
-  Future<void> delete (RecipeStep ingredients) async {
-    await databaseHelper.delete(STEPS_TABLENAME, ingredients.id!!);
+  Future<void> delete (RecipeStep step) async {
+    await databaseHelper.delete(STEPS_TABLENAME, step.id!);
   }
 
   Future<void> deleteByRecipe(int recipeId) async {
