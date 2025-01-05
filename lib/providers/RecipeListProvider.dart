@@ -2,16 +2,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipes_project/models/Recipe.dart';
 import 'package:recipes_project/models/RecipeListState.dart';
 import 'package:recipes_project/usecases/FilterRecipeListUsecase.dart';
+import 'package:recipes_project/usecases/GetRecipeListUsecase.dart';
 import 'package:recipes_project/utils/CustomException.dart';
 import '../repository/RecipeRepository.dart';
 
 class RecipeListNotifier extends StateNotifier<AsyncValue<RecipeListState>>{
-  final RecipeRepository repository;
   final FilterRecipeListUsecase filterRecipeListUsecase;
-  RecipeListNotifier(this.repository, this.filterRecipeListUsecase): super(const AsyncValue.loading());
+  final GetRecipeListUsecase getRecipeListUsecase;
+
+  RecipeListNotifier(this.filterRecipeListUsecase, this.getRecipeListUsecase): super(const AsyncValue.loading());
+
   Future<void> getAll() async {
     try {
-      final items = await repository.getAll();
+      final items = await getRecipeListUsecase.call();
       if(items.isEmpty){
         throw CustomException(CustomExceptionTypes.empty.message);
       }
@@ -30,10 +33,10 @@ class RecipeListNotifier extends StateNotifier<AsyncValue<RecipeListState>>{
     state = AsyncValue.data(state.value!.copyWith(currentFilters: filterList, listRecipe: recipeFilter));
   }
 
-  void deleteFilter(int index)async {
+  void deleteFilter(int index) async {
     List<dynamic> newFilters = state.value!.currentFilters;
     newFilters.removeAt(index);
-    if(newFilters.isNotEmpty){
+    if(newFilters.isNotEmpty || state.value!.keyword.isNotEmpty){
       List<Recipe> recipeFilter = await filter(newFilters, state.value!.keyword);
       state = AsyncValue.data(state.value!.copyWith(currentFilters: newFilters, listRecipe: recipeFilter));
     }else {
@@ -58,7 +61,7 @@ class RecipeListNotifier extends StateNotifier<AsyncValue<RecipeListState>>{
 }
 
 final recipeListProvider = StateNotifierProvider<RecipeListNotifier, AsyncValue<RecipeListState>>((ref) {
-    final repository = ref.read(recipeRepositoryProvider);
     final filterRecipeUseCase = ref.read(filterRecipeListUsecaseProvider);
-    return RecipeListNotifier(repository,filterRecipeUseCase);
+    final getRecipelistUseCase = ref.read(getRecipeListUsecaseProvider);
+    return RecipeListNotifier(filterRecipeUseCase, getRecipelistUseCase);
 });
