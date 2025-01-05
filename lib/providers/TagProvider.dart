@@ -1,25 +1,28 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipes_project/models/TagListState.dart';
+import 'package:recipes_project/usecases/GetTagsUseCase.dart';
+import 'package:recipes_project/usecases/SaveTagUsecase.dart';
 
 import '../models/Tag.dart';
 import '../repository/TagRepository.dart';
 
 class TagListNotifier extends StateNotifier<TagListState>{
-  TagRepository tagRepository;
+  GetTagsUsecase getTagsUsecase;
+  SaveTagUsecase saveTagUsecase;
 
-  TagListNotifier({required this.tagRepository}):super(TagListState(tagList: []));
+  TagListNotifier({required this.getTagsUsecase, required this.saveTagUsecase}):super(TagListState(tagList: []));
 
   void init(){
     getAllTags();
   }
 
   void getAllTags() async{
-    List<Tag> tagList = await tagRepository.getAll();
+    List<Tag> tagList = await getTagsUsecase.call();
     state = TagListState(tagList: tagList);
   }
 
   Future<Tag> insertTagItem(Tag tag) async{
-    int id = await tagRepository.addTag(tag);
+    int id = await saveTagUsecase.call(tag);
     getAllTags();
     return tag.copyWith(id: id);
   }
@@ -27,6 +30,7 @@ class TagListNotifier extends StateNotifier<TagListState>{
 }
 
 final tagListProvider = StateNotifierProvider<TagListNotifier, TagListState>((ref) {
-  final tagRepository = ref.read(tagRepositoryProvider);
-  return TagListNotifier(tagRepository: tagRepository);
+  final getTagsUsecase = ref.read(getTagsUsecaseProvider);
+  final saveTagUsecase = ref.read(saveTagUsecaseProvider);
+  return TagListNotifier(getTagsUsecase: getTagsUsecase, saveTagUsecase: saveTagUsecase);
 });

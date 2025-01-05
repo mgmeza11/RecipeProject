@@ -8,85 +8,41 @@ import 'package:recipes_project/models/Tag.dart';
 import 'package:recipes_project/repository/IngredientsRepository.dart';
 import 'package:recipes_project/repository/RecipeStepRepository.dart';
 import 'package:recipes_project/repository/TagRepository.dart';
+import 'package:recipes_project/usecases/SaveRecipeUsecase.dart';
 import 'package:recipes_project/utils/Categories.dart';
 import 'package:recipes_project/utils/CustomException.dart';
 
 import '../models/Recipe.dart';
 import '../repository/RecipeRepository.dart';
+import '../usecases/GetRecipeByIdUsecase.dart';
 
 class RecipeFormNotifier extends StateNotifier<AsyncValue<Recipe>>{
-  RecipeRepository recipeRepository;
-  RecipeStepRepository stepRepository;
-  IngredientsRepository ingredientsRepository;
-  TagRepository tagRepository;
+
+  GetRecipeByIdUsecase getRecipeByIdUsecase;
+  SaveRecipeUsecase saveRecipeUsecase;
   final ImagePicker imagePicker = ImagePicker();
 
-  RecipeFormNotifier({required this.recipeRepository, required this.stepRepository, required this.ingredientsRepository, required this.tagRepository }): super(const AsyncValue.loading());
+  RecipeFormNotifier({required this.getRecipeByIdUsecase, required this.saveRecipeUsecase}): super(const AsyncValue.loading());
 
   void init(int? idRecipe) async {
     if(idRecipe == null){
       state = AsyncValue.data(Recipe(name: '', categoryCode: CategoryType.breakfast.code, ingredients: [], steps: [], tags: []));
     } else {
-      Recipe? recipe = await recipeRepository.findById(idRecipe);
+      Recipe? recipe = await getRecipeByIdUsecase.call(idRecipe);
       if(recipe != null){
-        getRecipeData(recipe);
+        state = AsyncValue.data(recipe);
       }else{
         state = AsyncValue.error(CustomException(CustomExceptionTypes.notFound.message), StackTrace.empty);
       }
     }
   }
 
-  void getRecipeData(Recipe recipe) async {
-    int idRecipe = recipe.id!;
-    try{
-      List<RecipeStep> stepList = await stepRepository.getByRecipe(idRecipe);
-      List<Ingredients> ingredientList = await ingredientsRepository.getByRecipe(idRecipe);
-      List<Tag> tagList = await tagRepository.getByRecipe(idRecipe);
-      state = AsyncValue.data(recipe.copyWith(ingredients: ingredientList, steps: stepList, tags: tagList));
-    } catch (e) {
-      state = AsyncValue.error(CustomException(CustomExceptionTypes.technicalError.message), StackTrace.empty);
-    }
-
-  }
-
   void saveData() async {
     try{
       Recipe recipe = state.value!;
-      int idRecipe = await recipeRepository.insert(recipe);
-      saveSteps(recipe, idRecipe);
-      saveIngredients(recipe, idRecipe);
-      saveTags(recipe, idRecipe);
+      await saveRecipeUsecase.call(recipe);
     }catch(e){
       state = AsyncValue.error(CustomException(CustomExceptionTypes.technicalError.message), StackTrace.empty);
-    }
-  }
-
-  void saveSteps(Recipe recipe, int idRecipe) async {
-    List<RecipeStep> currentSteps = recipe.steps;
-    if (currentSteps.isNotEmpty) {
-      List<RecipeStep> newSteps = currentSteps.asMap().entries.map((e) {
-        int index = e.key;
-        RecipeStep step = e.value;
-        return step.copyWith(order: index, idRecipe: idRecipe);
-      }
-      ).toList();
-      await stepRepository.addList(newSteps);
-    }
-  }
-
-  void saveIngredients(Recipe recipe, int idRecipe) async {
-    List<Ingredients> currentingredients = recipe.ingredients;
-    if (currentingredients.isNotEmpty) {
-      List<Ingredients> newIngredients = currentingredients.map((e) => e.copyWith(idRecipe: idRecipe)).toList();
-      await ingredientsRepository.addList(newIngredients);
-    }
-  }
-
-  void saveTags(Recipe recipe, int idRecipe) async {
-    List<Tag> currentTags = recipe.tags;
-    if (currentTags.isNotEmpty) {
-      List<RecipeTag> recipeTags = currentTags.map((e) => RecipeTag(idRecipe: idRecipe, idTag: e.id!)).toList();
-      await tagRepository.addRecipeTagList(recipeTags);
     }
   }
 
@@ -178,9 +134,7 @@ class RecipeFormNotifier extends StateNotifier<AsyncValue<Recipe>>{
 }
 
 final recipeFormProvider = StateNotifierProvider<RecipeFormNotifier, AsyncValue<Recipe>>((ref) {
-  final recipeRpository = ref.read(recipeRepositoryProvider);
-  final stepRepository = ref.read(recipeStepRepositoryProvider);
-  final ingredientsRepository = ref.read(ingredientsRepositoryProvider);
-  final tagRepository = ref.read(tagRepositoryProvider);
-  return RecipeFormNotifier(recipeRepository: recipeRpository, stepRepository: stepRepository, ingredientsRepository: ingredientsRepository, tagRepository: tagRepository);
+  final getRecipebyIdUsecase = ref.read(getRecipeByIdUsecaseProvider);
+  final saveRecipeUsecase = ref.read(saveRecipeUsecaseProvider);
+  return RecipeFormNotifier(getRecipeByIdUsecase: getRecipebyIdUsecase, saveRecipeUsecase: saveRecipeUsecase);
 });
