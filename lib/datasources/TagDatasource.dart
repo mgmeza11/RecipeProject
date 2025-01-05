@@ -17,7 +17,7 @@ class TagDatasource {
 
   Future<List<Tag>> getByRecipe(int recipeId) async {
     String query = 'SELECT * FROM $TAGS_TABLENAME t LEFT JOIN $TAG_RECIPE_TABLENAME tr ON t.id = tr.id_tag WHERE tr.id_recipe = ? ';
-    final data = await databaseHelper.query(query, recipeId);
+    final data = await databaseHelper.queryById(query, recipeId);
     return data.map((item) => Tag.fromMap(item)).toList();
   }
 

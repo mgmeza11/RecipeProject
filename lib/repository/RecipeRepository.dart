@@ -19,6 +19,10 @@ class RecipeRepository {
     return recipeDatasource.insert(recipe);
   }
 
+  Future<List<Recipe>> filterList(String where, List<dynamic> whereArgs) async {
+    return recipeDatasource.getFilteredList(where, whereArgs);
+  }
+
 }
 
 final recipeRepositoryProvider = Provider<RecipeRepository>((ref) {

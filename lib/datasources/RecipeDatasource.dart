@@ -27,8 +27,8 @@ class RecipeDatasource{
     return data.map((item) => Recipe.fromMap(item)).toList();
   }
 
-  Future<List<Recipe>> getFilteredList(String where, List<Object> whereArgs) async {
-    final data = await databaseHelper.getWhere(RECIPES_TABLENAME, where, whereArgs);
+  Future<List<Recipe>> getFilteredList(String where, List<dynamic> whereArgs) async {
+    final data = await databaseHelper.query(where, whereArgs);
     return data.map((item) => Recipe.fromMap(item)).toList();
   }
 

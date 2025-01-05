@@ -11,7 +11,7 @@ class CustomException implements Exception{
 enum CustomExceptionTypes{
   empty('Aún no cuentas con recetas'),
   notFound('No se han encontrado resultados'),
-  technicalError('Ha ocurrido un error'),
+  technicalError('Ha ocurrido un error técnico'),
   noResult('No se han encontrado resultados que coincidan con el criterio de búsqueda');
 
   final String message;

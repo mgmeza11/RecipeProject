@@ -76,7 +76,7 @@ class DatabaseHelper {
     return await db.query(tableName);
   }
 
-  Future<List<Map<String, dynamic>>> getWhere(String tableName, String where, List<Object> whereArgs ) async {
+  Future<List<Map<String, dynamic>>> getWhere(String tableName, String where, List<dynamic> whereArgs ) async {
     final db = await database;
     return await db.query(tableName, where: where, whereArgs: whereArgs);
   }
@@ -86,9 +86,14 @@ class DatabaseHelper {
     return results.first;
   }
 
-  Future<List<Map<String, Object?>>> query(String query, int arguments) async {
+  Future<List<Map<String, Object?>>> queryById(String query, int arguments) async {
     final db = await database;
     return await db.rawQuery(query, [arguments]);
+  }
+
+  Future<List<Map<String, Object?>>> query(String query, List<dynamic> arguments) async {
+    final db = await database;
+    return await db.rawQuery(query, arguments);
   }
 
 }
