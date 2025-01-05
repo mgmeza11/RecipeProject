@@ -24,6 +24,11 @@ class RecipeListNotifier extends StateNotifier<AsyncValue<RecipeListState>>{
     }
   }
 
+  Future<void> reloadResults() async {
+    List<Recipe> recipeFilter = await filter(state.value?.currentFilters ?? [], state.value?.keyword ?? "");
+    state = AsyncValue.data(state.value!.copyWith(listRecipe: recipeFilter));
+  }
+
   Future<List<Recipe>> filter(List<dynamic> filterList, String keyword) async {
     return await filterRecipeListUsecase.call(filterList, keyword);
   }

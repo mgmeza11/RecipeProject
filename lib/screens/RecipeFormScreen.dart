@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:recipes_project/providers/RecipeFormProvider.dart';
 import 'package:recipes_project/widgets/CategoryNameWidget.dart';
 import 'package:recipes_project/widgets/StepsWidgets.dart';
@@ -52,7 +53,9 @@ class RecipeFormScreenState extends ConsumerState<RecipeFormScreen> {
           child: Column(
             children: [
               HeaderRecipeFormWidget(
-                  showOptions: true, imagePath: recipe?.imagePath),
+                  showOptions: true, imagePath: recipe?.imagePath, pickImage: () async {
+                   ref.read(recipeFormProvider.notifier).pickImage();
+              },),
               BodyRecipeFormWidget(recipeState, recipeState.ingredients,
                   recipeState.steps, recipe.tags, controllersStep, controllersIngredients)
             ],
@@ -242,5 +245,10 @@ class RecipeFormScreenState extends ConsumerState<RecipeFormScreen> {
           ]
       );
     }
+  }
+
+  Future<bool> requestPermission(Permission permission) async {
+    final status = await permission.request();
+    return status.isGranted;
   }
 }

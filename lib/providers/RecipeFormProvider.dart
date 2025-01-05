@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:recipes_project/models/Ingredients.dart';
 import 'package:recipes_project/models/RecipeStep.dart';
 import 'package:recipes_project/models/RecipeTag.dart';
@@ -17,6 +19,7 @@ class RecipeFormNotifier extends StateNotifier<AsyncValue<Recipe>>{
   RecipeStepRepository stepRepository;
   IngredientsRepository ingredientsRepository;
   TagRepository tagRepository;
+  final ImagePicker imagePicker = ImagePicker();
 
   RecipeFormNotifier({required this.recipeRepository, required this.stepRepository, required this.ingredientsRepository, required this.tagRepository }): super(const AsyncValue.loading());
 
@@ -160,6 +163,16 @@ class RecipeFormNotifier extends StateNotifier<AsyncValue<Recipe>>{
     List<Tag> newTags = state.value!.tags!;
     newTags.removeAt(index);
     state = AsyncData(state.value!.copyWith(tags: newTags));
+  }
+
+  void pickImage() async {
+    final photosPermissionStatus = await Permission.photos.request();
+    if(photosPermissionStatus.isGranted){
+      final XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        state = AsyncData(state.value!.copyWith(imagePath: pickedFile.path));
+      }
+    }
   }
 
 }

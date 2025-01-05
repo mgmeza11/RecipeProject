@@ -12,7 +12,7 @@ class RecipeCardWidget extends StatelessWidget{
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          HeaderRecipeWidget(categoryCode: recipe.categoryCode, imagePath: recipe.imagePath,),
+          HeaderRecipeWidget(categoryCode: recipe.categoryCode, imagePath: recipe.imagePath, height: 100),
           Text(recipe.name,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             textAlign: TextAlign.start, maxLines: 1, overflow: TextOverflow.ellipsis,),

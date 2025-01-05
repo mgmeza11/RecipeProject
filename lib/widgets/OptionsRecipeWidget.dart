@@ -3,23 +3,20 @@ import 'package:flutter/material.dart';
 
 class OptionsRecipeWidget extends StatelessWidget{
 
-  bool isEditSelected = false;
+  VoidCallback? onEdit;
+  VoidCallback? onDelete;
+
+  OptionsRecipeWidget({super.key, this.onDelete, this.onEdit});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        IconButton(onPressed: () {
-          isEditSelected = !isEditSelected;
-        },
-            isSelected: isEditSelected,
-            icon: Icon(Icons.edit, color: Colors.blueGrey,),
-          selectedIcon: Icon(Icons.save_outlined),
+        IconButton(onPressed: onEdit,
+            icon: const Icon(Icons.edit, color: Colors.blueGrey,),
         ),
-        if (!isEditSelected) IconButton(onPressed: () {
-
-        },
-            icon: Icon(Icons.delete_outline, color: Colors.red,)
+        IconButton(onPressed: onDelete,
+            icon: const Icon(Icons.delete_outline, color: Colors.red,)
         ),
 
       ],

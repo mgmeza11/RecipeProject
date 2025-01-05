@@ -59,13 +59,16 @@ class RecipeListScreenState extends ConsumerState<RecipeListScreen> {
                 ref.read(recipeListProvider.notifier).deleteFilter(index)
               }),
               Expanded(
-                  child: (state.listRecipe.isNotEmpty)? BodyRecipeList(state.listRecipe, (idRecipe) {
-                Navigator.push(
+                  child: (state.listRecipe.isNotEmpty)? BodyRecipeList(state.listRecipe, (idRecipe) async {
+                bool requireUpdate = await Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => RecipeDetailScreen(
                               idRecipe: idRecipe,
                             )));
+
+                if(requireUpdate) notifier.reloadResults();
+
               }) : CustomErrorWidget(message: CustomExceptionTypes.noResult.message)
               )
             ],
