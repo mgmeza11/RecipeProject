@@ -8,7 +8,7 @@ class DeleteTagsByRecipeUsecase {
   DeleteTagsByRecipeUsecase({required this.tagRepository});
 
   Future<void> call(int idRecipe) async {
-    return tagRepository.deleteByRecipe(idRecipe);
+    await tagRepository.deleteByRecipe(idRecipe);
   }
 }
 

@@ -10,7 +10,7 @@ class GetIngredientsByRecipeUsecase {
   GetIngredientsByRecipeUsecase({required this.ingredientsRepository});
 
   Future<List<Ingredients>> call(int idRecipe) async {
-    return ingredientsRepository.getByRecipe(idRecipe);
+    return await ingredientsRepository.getByRecipe(idRecipe);
   }
 }
 

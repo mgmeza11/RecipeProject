@@ -37,7 +37,7 @@ class RecipeFormNotifier extends StateNotifier<AsyncValue<Recipe>>{
     }
   }
 
-  void saveData() async {
+  Future<void> saveData() async {
     try{
       Recipe recipe = state.value!;
       await saveRecipeUsecase.call(recipe);

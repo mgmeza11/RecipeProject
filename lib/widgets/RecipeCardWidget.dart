@@ -16,7 +16,7 @@ class RecipeCardWidget extends StatelessWidget{
           Text(recipe.name,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             textAlign: TextAlign.start, maxLines: 1, overflow: TextOverflow.ellipsis,),
-          DetailText(text: recipe.description!!, maxLines: 2),
+          DetailText(text: recipe.description ?? "", maxLines: 2),
         ],
       )
     )

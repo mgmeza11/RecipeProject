@@ -10,7 +10,7 @@ class GetStepsByRecipeUsecase {
   GetStepsByRecipeUsecase({required this.recipeStepRepository});
 
   Future<List<RecipeStep>> call(int idRecipe) async {
-    return recipeStepRepository.getByRecipe(idRecipe);
+    return await recipeStepRepository.getByRecipe(idRecipe);
   }
 }
 

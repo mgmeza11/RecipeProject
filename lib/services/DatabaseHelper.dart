@@ -8,11 +8,11 @@ class DatabaseHelper {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDatabase();
+    _database = await initDatabase();
     return _database!;
   }
 
-  _initDatabase() async {
+  Future<Database> initDatabase() async {
     String path = join(await getDatabasesPath(), DATABASE_NAME);
     return await openDatabase(path, version: 1, onCreate: _onCreate);
   }

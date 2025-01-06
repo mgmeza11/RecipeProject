@@ -8,7 +8,7 @@ class DeleteStepsByRecipeUsecase {
   DeleteStepsByRecipeUsecase({required this.recipeStepRepository});
 
   Future<void> call(int idRecipe) async {
-    return recipeStepRepository.deleteByRecipe(idRecipe);
+    await recipeStepRepository.deleteByRecipe(idRecipe);
   }
 }
 

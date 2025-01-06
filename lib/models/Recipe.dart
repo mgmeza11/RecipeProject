@@ -38,8 +38,8 @@ class Recipe{
     return Recipe(
         id: map['id'],
         name: map['name'],
-        description: map['description'],
-        imagePath: map['image_path'],
+        description: map['description'] ?? "",
+        imagePath: map['image_path'] ?? "",
         categoryCode: map['category_code'],
         ingredients: [],
         steps: [],

@@ -10,7 +10,7 @@ class GetTagsByRecipeUsecase {
   GetTagsByRecipeUsecase({required this.tagsRepository});
 
   Future<List<Tag>> call(int idRecipe) async {
-    return tagsRepository.getByRecipe(idRecipe);
+    return await tagsRepository.getByRecipe(idRecipe);
   }
 }
 

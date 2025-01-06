@@ -67,8 +67,8 @@ class RecipeFormScreenState extends ConsumerState<RecipeFormScreen> {
         return LoadingWidget();
       })),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ref.read(recipeFormProvider.notifier).saveData();
+        onPressed: () async {
+          await ref.read(recipeFormProvider.notifier).saveData();
           Navigator.pop(context, true);
         },
         child: const Icon(Icons.save_outlined),
@@ -229,12 +229,10 @@ class RecipeFormScreenState extends ConsumerState<RecipeFormScreen> {
   void validateControllers(
       List<Ingredients> ingredients,
       List<RecipeStep> steps,){
-    if (steps.length != controllersStep.length) {
       controllersStep = List.generate(
           steps.length,
               (index) =>
               TextEditingController(text: steps[index].description));
-    }
     if(ingredients.length != controllersIngredients.length){
       controllersIngredients = List.generate(
           ingredients.length,

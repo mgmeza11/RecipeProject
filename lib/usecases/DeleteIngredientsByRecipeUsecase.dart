@@ -9,7 +9,7 @@ class DeleteIngredientsByRecipeUsecase {
   DeleteIngredientsByRecipeUsecase({required this.ingredientsRepository});
 
   Future<void> call(int idRecipe) async {
-    return ingredientsRepository.deleteByRecipe(idRecipe);
+    await ingredientsRepository.deleteByRecipe(idRecipe);
   }
 }
 
